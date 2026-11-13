@@ -1,22 +1,47 @@
-name: My Django Project CI
-on: push
+name: Deploy Django Project
+
+on:
+  push:
+    branches: [ main ]
 
 jobs:
-  connect:
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Install sshpass
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y sshpass
-      
-      - name: Connect to VPS
-        run: |
-          export SSHPASS="Salam@123"
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-          sshpass -e ssh \
-            -o StrictHostKeyChecking=accept-new \
-            -p 22 \
-            root@45.61.158.184 \
-            "whoami && hostname && uptime"
+      - name: Setup SSH Key and Deploy
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          
+          # VPS serwere baglanyp kody çekmek we işetmek
+          ssh -o StrictHostKeyChecking=accept-new -i ~/.ssh/id_rsa root@45.61.158.184 << 'EOF'
+            # Proýekt papkasy bar bolsa git pull, ýok bolsa clone etmeli
+            if [ -d "/root/paylas_ulgamy" ]; then
+              cd /root/paylas_ulgamy
+              git pull origin main
+            else
+              git clone https://github.com/jonatanjohn579-glitch/paylas-ulgamy.git /root/paylas_ulgamy
+              cd /root/paylas_ulgamy
+            fi
+            
+            # Virtual environment barlamak we döretmek
+            if [ ! -d "venv" ]; then
+              python3 -m venv venv
+            fi
+            source venv/bin/activate
+            
+            # Kitaphanalary gurnamak we migrasiýa
+            pip install --upgrade pip
+            pip install -r requirements.txt
+            python manage.py migrate
+            python manage.py collectstatic --noinput
+            
+            # Eger gunicorn ýa-da systemd ulanylýan bolsa serweri restart etmek
+            sudo systemctl restart paylas_ulgamy || true
+          EOF
