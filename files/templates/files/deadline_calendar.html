@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}Deadline Kalendar - Paylas Ulgamy{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-green: #198754;
+        --hover-green: #157347;
+        --light-green: #e8f5e9;
+        --border-green: #c8e6c9;
+    }
+
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 1rem;
+    }
+    .calendar-cell {
+        min-height: 160px;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.75rem;
+        padding: 0.75rem;
+        transition: all 0.2s ease;
+    }
+    .calendar-cell:hover {
+        border-color: var(--border-green);
+        box-shadow: 0 4px 12px rgba(25, 135, 84, 0.08);
+    }
+    .calendar-cell.muted {
+        opacity: 0.45;
+        background: #f8f9fa;
+    }
+    /* Şu günki güne ýaşyl çäk we ýaşyl fon berildi */
+    .calendar-cell.today {
+        border-color: var(--primary-green);
+        box-shadow: 0 0 0 2px rgba(25, 135, 84, 0.25);
+        background-color: #f4fbf7;
+    }
+    .calendar-event {
+        font-size: 0.8rem;
+        font-weight: 500;
+        border-radius: 999px;
+        padding: 0.25rem 0.65rem;
+        margin-bottom: 0.35rem;
+        display: block;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+    
+    /* Etiketkalar üçin ýaşyl we sary/gyzyl reňk utgaşmalary */
+    .calendar-event.assignment { 
+        background: #e8f5e9; 
+        color: #1b5e20; 
+        border: 1px solid #c8e6c9;
+    }
+    .calendar-event.private_file { 
+        background: #fff3e0; 
+        color: #e65100; 
+        border: 1px solid #ffe0b2;
+    }
+    .calendar-event.class_file { 
+        background: #d1e7dd; 
+        color: #0f5132; 
+        border: 1px solid #badbcc;
+    }
+
+    /* Düwmeler üçin ýaşyl dizaýn */
+    .btn-outline-success-custom {
+        color: var(--primary-green);
+        border-color: var(--primary-green);
+    }
+    .btn-outline-success-custom:hover {
+        background-color: var(--primary-green);
+        border-color: var(--primary-green);
+        color: #fff;
+    }
+    .bg-success-custom {
+        background-color: var(--primary-green) !important;
+    }
+    .text-success-custom {
+        color: var(--primary-green) !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1 text-success-custom"><i class="fas fa-calendar-days"></i> Deadline kalendary</h2>
+            <p class="text-muted mb-0 fw-semibold">{{ month_start|date:"F Y" }}</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="?month={{ prev_month|date:'Y-m-d' }}" class="btn btn-outline-success-custom btn-sm">
+                <i class="fas fa-chevron-left"></i> Öňki aý
+            </a>
+            <a href="?month={{ next_month|date:'Y-m-d' }}" class="btn btn-outline-success-custom btn-sm">
+                Indiki aý <i class="fas fa-chevron-right"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Hepde günleri -->
+    <div class="calendar-grid mb-3">
+        {% for weekday in weekday_names %}
+        <div class="fw-bold text-center text-success-custom text-uppercase small">{{ weekday }}</div>
+        {% endfor %}
+    </div>
+
+    <!-- Kalendar öýjükleri -->
+    {% for week in weeks %}
+    <div class="calendar-grid mb-3">
+        {% for day in week %}
+        <div class="calendar-cell {% if not day.is_current_month %}muted{% endif %} {% if day.is_today %}today{% endif %}">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <strong class="{% if day.is_today %}text-success-custom{% else %}text-secondary{% endif %}">
+                    {{ day.date.day }}
+                </strong>
+                {% if day.is_today %}
+                    <span class="badge bg-success-custom">Şu gün</span>
+                {% endif %}
+            </div>
+            {% for event in day.events %}
+            <div class="calendar-event {{ event.type }}" title="{{ event.meta }}">
+                <i class="fas fa-circle me-1" style="font-size: 0.5rem;"></i> {{ event.title|truncatechars:20 }}
+            </div>
+            {% empty %}
+            <small class="text-muted opacity-50">Boş</small>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+
+    <!-- Etiketka / Legenda bölegi -->
+    <div class="card border-0 shadow-sm mt-4">
+        <div class="card-body p-3 d-flex gap-3 align-items-center flex-wrap">
+            <span class="fw-bold text-muted small me-2"><i class="fas fa-tags"></i> Bellikler:</span>
+            <span class="calendar-event assignment m-0"><i class="fas fa-tasks me-1"></i> Tabşyryk</span>
+            <span class="calendar-event private_file m-0"><i class="fas fa-lock me-1"></i> Şahsy faýl möhleti</span>
+            <span class="calendar-event class_file m-0"><i class="fas fa-users me-1"></i> Topar faýly möhleti</span>
+        </div>
+    </div>
+</div>
+{% endblock %}

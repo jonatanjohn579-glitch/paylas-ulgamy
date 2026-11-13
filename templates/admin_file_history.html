@@ -1,0 +1,448 @@
+{% extends 'base.html' %}
+
+{% block title %}Faýl Taryhy - Paylaş Ulgamy{% endblock %}
+
+{% block content %}
+<style>
+    /* ========== Vibrant Green Theme ========== */
+    :root {
+        --primary-green: #10b981;
+        --emerald-bright: #00ff87;
+        --dark-green: #064e3b;
+        --neon-green: #00ff9d;
+        --neon-glow: rgba(0, 255, 135, 0.65);
+        
+        --body-bg: #f0fdf4;
+        --card-bg: #ffffff;
+        --text-main: #064e3b;
+        --text-sub: #4b5563;
+        --icon-bg: #ecfdf5;
+        --table-border: #e5e7eb;
+        --input-bg: #ffffff;
+    }
+
+    [data-bs-theme="dark"] {
+        --body-bg: #020617;
+        --card-bg: #0f172a;
+        --text-main: #ecfdf5;
+        --text-sub: #94a3b8;
+        --icon-bg: #064e3b;
+        --neon-glow: rgba(0, 255, 135, 0.9);
+        --table-border: #1e293b;
+        --input-bg: #1e293b;
+    }
+
+    body {
+        background-color: var(--body-bg) !important;
+        color: var(--text-main);
+        transition: background-color 0.4s ease, color 0.4s ease;
+        overflow-x: hidden;
+    }
+
+    /* ========== Background Particles ========== */
+    .bg-particles-container {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+    }
+
+    .floating-shape {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(circle, var(--emerald-bright) 0%, transparent 70%);
+        opacity: 0.18;
+        filter: blur(2px);
+        animation: floatAround 8s ease-in-out infinite alternate;
+    }
+
+    .shape-1 { width: 220px; height: 220px; top: 8%;  left: 3%;  animation-duration: 7s; }
+    .shape-2 { width: 300px; height: 300px; top: 55%; right: 2%; animation-duration: 9s; animation-delay: -3s; }
+    .shape-3 { width: 140px; height: 140px; top: 75%; left: 18%; animation-duration: 6s; animation-delay: -1.5s; }
+    .shape-4 { width: 260px; height: 260px; top: 25%; right: 25%; animation-duration: 8s; animation-delay: -4s; }
+    .shape-5 { width: 100px; height: 100px; top: 40%; left: 45%; animation-duration: 5.5s; animation-delay: -2s; }
+
+    /* ========== Hero Header Section ========== */
+    .heroic-section {
+        position: relative;
+        z-index: 1;
+        background: linear-gradient(125deg, #022c22 0%, #047857 30%, #10b981 55%, #00ff87 80%, #34d399 100%);
+        background-size: 300% 300%;
+        animation: fastGradient 4s ease infinite alternate;
+        color: #ffffff;
+        padding: 2.5rem 2rem;
+        border-radius: 0 0 2rem 2rem;
+        margin-bottom: 2.5rem;
+        box-shadow: 0 15px 40px rgba(0, 255, 135, 0.4);
+        overflow: hidden;
+    }
+
+    .heroic-section::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 20% 50%, rgba(0,255,135,0.25) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(16,185,129,0.2) 0%, transparent 45%);
+        pointer-events: none;
+    }
+
+    .btn-custom-back {
+        background: rgba(255, 255, 255, 0.2);
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(8px);
+        border-radius: 50rem;
+        padding: 0.5rem 1.3rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-custom-back:hover {
+        background: #ffffff;
+        color: var(--dark-green) !important;
+        transform: translateX(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    /* ========== Content Wrappers & Cards ========== */
+    .dashboard-container {
+        position: relative;
+        z-index: 2;
+    }
+
+    .card-wrapper {
+        position: relative;
+        border-radius: 1.6rem;
+        padding: 2.5px;
+        background: linear-gradient(135deg, #00ff87, #10b981, #34d399, #00ff87, #059669);
+        background-size: 300% 300%;
+        animation: superFastBorder 2.2s linear infinite;
+        box-shadow: 0 8px 25px rgba(0, 255, 135, 0.15);
+        margin-bottom: 2rem;
+    }
+
+    .card-wrapper::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 1.6rem;
+        background: linear-gradient(135deg, #00ff87, #10b981, #3b82f6, #00ff87);
+        background-size: 300% 300%;
+        animation: superFastBorder 2.2s linear infinite;
+        filter: blur(18px);
+        opacity: 0.45;
+        z-index: 0;
+    }
+
+    .custom-card {
+        position: relative;
+        z-index: 1;
+        background-color: var(--card-bg) !important;
+        border-radius: 1.45rem;
+        padding: 1.8rem;
+        color: var(--text-main);
+        transition: background-color 0.3s ease;
+    }
+
+    /* ========== Forms & Inputs ========== */
+    .form-label {
+        color: var(--text-main);
+        font-weight: 600;
+        margin-bottom: 0.4rem;
+    }
+
+    .form-select, .form-control {
+        background-color: var(--input-bg) !important;
+        color: var(--text-main) !important;
+        border: 1px solid var(--table-border);
+        border-radius: 0.8rem;
+        padding: 0.65rem 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-select:focus, .form-control:focus {
+        border-color: var(--primary-green);
+        box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.25);
+    }
+
+    .btn-submit-filter {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: #ffffff;
+        border: none;
+        border-radius: 0.8rem;
+        padding: 0.65rem 1.8rem;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .btn-submit-filter:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 255, 135, 0.4);
+        color: #ffffff;
+    }
+
+    /* ========== Table Styling ========== */
+    .table {
+        color: var(--text-main) !important;
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+
+    .table thead th {
+        background-color: var(--icon-bg) !important;
+        color: var(--text-main) !important;
+        border-bottom: 2px solid var(--primary-green);
+        padding: 1rem;
+        font-weight: 700;
+    }
+
+    .table td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--table-border);
+        color: var(--text-main);
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 255, 135, 0.05) !important;
+    }
+
+    /* ========== Pagination ========== */
+    .pagination .page-link {
+        background-color: var(--card-bg);
+        color: var(--text-main);
+        border: 1px solid var(--table-border);
+        padding: 0.5rem 1rem;
+        border-radius: 0.6rem;
+        margin: 0 3px;
+        transition: all 0.3s ease;
+    }
+
+    .pagination .page-item.active .page-link {
+        background: linear-gradient(135deg, #10b981, #059669);
+        border-color: var(--primary-green);
+        color: #ffffff;
+        font-weight: 700;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .pagination .page-link:hover:not(.active) {
+        background-color: var(--icon-bg);
+        color: var(--primary-green);
+    }
+
+    /* ========== Theme Switch Button ========== */
+    .theme-switch-btn {
+        position: fixed;
+        bottom: 28px;
+        right: 28px;
+        z-index: 1050;
+        width: 62px;
+        height: 62px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #00ff87, #059669);
+        color: #ffffff;
+        border: none;
+        box-shadow: 0 8px 28px var(--neon-glow);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .theme-switch-btn:hover {
+        transform: scale(1.18) rotate(15deg);
+        box-shadow: 0 12px 35px var(--neon-glow);
+    }
+
+    /* ========== Keyframes ========== */
+    @keyframes superFastBorder {
+        0%   { background-position: 0% 50%; }
+        50%  { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    @keyframes fastGradient {
+        0%   { background-position: 0% 50%; }
+        50%  { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    @keyframes floatAround {
+        0%   { transform: translate(0, 0) scale(1); }
+        33%  { transform: translate(25px, -35px) scale(1.15); }
+        66%  { transform: translate(-30px, 20px) scale(0.9); }
+        100% { transform: translate(15px, 30px) scale(1.05); }
+    }
+</style>
+
+<!-- Floating Background Shapes -->
+<div class="bg-particles-container">
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+    <div class="floating-shape shape-4"></div>
+    <div class="floating-shape shape-5"></div>
+</div>
+
+<!-- Hero Header Section -->
+<div class="heroic-section">
+    <div class="container-fluid">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+            <div class="mb-3 mb-md-0">
+                <h1 class="mb-1 fw-bold">
+                    <i class="fas fa-history me-2"></i> Admin faýl taryhy
+                </h1>
+                <p class="lead mb-0 opacity-90">Ulgamdaky faýllar bilen geçirilen ähli hereketleriň sanawy</p>
+            </div>
+            <div>
+                <a href="{% url 'admin_dashboard' %}" class="btn btn-custom-back">
+                    <i class="fas fa-arrow-left me-1"></i> Admin paneline dolan
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content Area -->
+<div class="container-fluid dashboard-container pb-5">
+
+    <!-- Filter Form Card -->
+    <div class="card-wrapper">
+        <div class="custom-card">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label"><i class="fas fa-bolt me-1 text-success"></i> Hereket</label>
+                    <select name="action" class="form-select">
+                        <option value="">Hemmesi</option>
+                        {% for value, label in action_choices %}
+                        <option value="{{ value }}" {% if selected_action == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label"><i class="fas fa-file me-1 text-success"></i> Faýl görnüşi</label>
+                    <select name="file_type" class="form-select">
+                        <option value="">Hemmesi</option>
+                        {% for value, label in file_type_choices %}
+                        <option value="{{ value }}" {% if selected_file_type == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label"><i class="fas fa-user me-1 text-success"></i> Ulanyjy</label>
+                    <input type="text" name="user" value="{{ search_user }}" class="form-control" placeholder="Ulanyjy ady">
+                </div>
+                <div class="col-12 text-end">
+                    <button type="submit" class="btn btn-submit-filter">
+                        <i class="fas fa-filter me-1"></i> Süz
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Activity Log Table Card -->
+    <div class="card-wrapper">
+        <div class="custom-card">
+            {% if activities %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Wagt</th>
+                            <th>Ulanyjy</th>
+                            <th>Görnüş</th>
+                            <th>Hereket</th>
+                            <th>Faýl</th>
+                            <th>Düşündiriş</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for activity in activities %}
+                        <tr>
+                            <td><i class="far fa-clock me-1 text-muted"></i> {{ activity.created_at|date:"d.m.Y H:i" }}</td>
+                            <td><span class="badge bg-success bg-opacity-10 text-success px-2 py-1 fw-semibold">{{ activity.actor.username|default:"Ulgam" }}</span></td>
+                            <td>{{ activity.get_file_type_display }}</td>
+                            <td>{{ activity.get_action_display }}</td>
+                            <td class="fw-bold">{{ activity.file_name }}</td>
+                            <td class="text-sub">{{ activity.description|default:"-" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-4">
+                <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+                <p class="text-sub mb-0 fw-semibold">Heniz taryh ýazgysy ýok.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    {% if activities.has_other_pages %}
+    <nav aria-label="Sahypa geçişi" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if activities.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ activities.previous_page_number }}&action={{ selected_action }}&file_type={{ selected_file_type }}&user={{ search_user }}">
+                    <i class="fas fa-chevron-left me-1"></i> Öňki
+                </a>
+            </li>
+            {% endif %}
+            
+            <li class="page-item active">
+                <span class="page-link">Sahypa {{ activities.number }} / {{ activities.paginator.num_pages }}</span>
+            </li>
+            
+            {% if activities.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ activities.next_page_number }}&action={{ selected_action }}&file_type={{ selected_file_type }}&user={{ search_user }}">
+                    Indiki <i class="fas fa-chevron-right ms-1"></i>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+
+</div>
+
+<!-- Theme Switch Button -->
+<button class="theme-switch-btn" id="themeToggleBtn" title="Reňk düzgünini çalyş">
+    <i class="fas fa-moon fa-lg" id="themeIcon"></i>
+</button>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const themeToggleBtn = document.getElementById("themeToggleBtn");
+        const themeIcon = document.getElementById("themeIcon");
+        const htmlElement = document.documentElement;
+
+        const savedTheme = localStorage.getItem("theme") || "light";
+        applyTheme(savedTheme);
+
+        themeToggleBtn.addEventListener("click", function () {
+            let currentTheme = htmlElement.getAttribute("data-bs-theme");
+            let newTheme = currentTheme === "dark" ? "light" : "dark";
+            applyTheme(newTheme);
+        });
+
+        function applyTheme(theme) {
+            htmlElement.setAttribute("data-bs-theme", theme);
+            localStorage.setItem("theme", theme);
+            if (theme === "dark") {
+                themeIcon.classList.remove("fa-moon");
+                themeIcon.classList.add("fa-sun");
+            } else {
+                themeIcon.classList.remove("fa-sun");
+                themeIcon.classList.add("fa-moon");
+            }
+        }
+    });
+</script>
+{% endblock %}

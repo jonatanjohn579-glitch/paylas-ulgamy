@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="tk" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Paylaş Ulgamy{% endblock %}</title>
+    
+    <!-- Bootstrap & FontAwesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ========== Vibrant Green Theme Variables ========== */
+        :root {
+            --primary-green: #10b981;
+            --emerald-bright: #00ff87;
+            --dark-green: #064e3b;
+            --neon-green: #00ff9d;
+            --neon-glow: rgba(0, 255, 135, 0.65);
+            
+            --body-bg: #f0fdf4;
+            --card-bg: #ffffff;
+            --navbar-bg: rgba(255, 255, 255, 0.85);
+            --text-main: #064e3b;
+            --text-sub: #4b5563;
+            --icon-bg: #ecfdf5;
+            --border-color: rgba(16, 185, 129, 0.2);
+            --dropdown-bg: #ffffff;
+        }
+
+        [data-bs-theme="dark"] {
+            --body-bg: #020617;
+            --card-bg: #0f172a;
+            --navbar-bg: rgba(15, 23, 42, 0.85);
+            --text-main: #ecfdf5;
+            --text-sub: #94a3b8;
+            --icon-bg: #064e3b;
+            --neon-glow: rgba(0, 255, 135, 0.9);
+            --border-color: rgba(0, 255, 135, 0.2);
+            --dropdown-bg: #0f172a;
+        }
+
+        body {
+            background-color: var(--body-bg) !important;
+            color: var(--text-main) !important;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            transition: background-color 0.4s ease, color 0.4s ease;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphic Navbar */
+        .navbar-custom {
+            background: var(--navbar-bg) !important;
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0, 255, 135, 0.08);
+            z-index: 1030;
+            padding: 0.8rem 1rem;
+        }
+
+        .navbar-brand-custom {
+            font-weight: 800;
+            font-size: 1.45rem;
+            background: linear-gradient(135deg, #059669, #00ff87);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .nav-link-custom {
+            color: var(--text-main) !important;
+            font-weight: 600;
+            padding: 0.5rem 0.9rem !important;
+            border-radius: 0.6rem;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .nav-link-custom:hover {
+            background-color: var(--icon-bg);
+            color: var(--primary-green) !important;
+        }
+
+        .dropdown-menu-custom {
+            background-color: var(--dropdown-bg) !important;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border-radius: 1rem;
+            padding: 0.6rem;
+        }
+
+        .dropdown-item-custom {
+            color: var(--text-main) !important;
+            border-radius: 0.6rem;
+            padding: 0.6rem 1rem;
+            font-weight: 500;
+        }
+
+        .main-wrapper {
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-custom {
+            background: var(--navbar-bg);
+            border-top: 1px solid var(--border-color);
+            padding: 1.8rem 0;
+            margin-top: auto;
+            color: var(--text-sub) !important;
+            text-align: center;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Fixed Global Theme Switch Button (Özüne çekiji we düzedilen Aý/Gün nyşany) */
+        .theme-switch-btn {
+            position: fixed !important;
+            bottom: 28px !important;
+            right: 28px !important;
+            z-index: 999999 !important;
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00ff87, #059669);
+            color: #ffffff !important;
+            border: none;
+            box-shadow: 0 8px 28px var(--neon-glow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .theme-switch-btn:hover {
+            transform: scale(1.2) rotate(10deg);
+            box-shadow: 0 12px 38px var(--emerald-bright);
+        }
+
+        /* Aý nyşanynyň dogry tarapa bakmagy we owadan görünmegi üçin transform */
+        .fa-moon {
+            transform: scaleX(-1) rotate(-15deg);
+            display: inline-block;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- Ähli sahypalara Awto-Yza dolanmak düwmesi -->
+    <div class="container-fluid pt-3 pb-2">
+        <button onclick="history.back()" class="btn btn-outline-success btn-sm shadow-sm">
+            <i class="fas fa-arrow-left me-1"></i> Yza dolan
+        </button>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand-custom" href="{% url 'dashboard' %}">
+                <i class="fas fa-share-alt text-success"></i> Paylaş Ulgamy
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link-custom" href="{% url 'notice_board' %}">
+                            <i class="fas fa-bullhorn text-warning"></i> Umumy tagta
+                        </a>
+                    </li>
+                    
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link-custom" href="{% url 'dashboard' %}">
+                                <i class="fas fa-home text-primary"></i> Baş sahypa
+                            </a>
+                        </li>
+                        
+                        {% if user.is_teacher_role or user.is_admin_role %}
+                        <li class="nav-item">
+                            <a class="nav-link-custom" href="{% url 'student_list' %}">
+                                <i class="fas fa-users text-info"></i> Talyplar
+                            </a>
+                        </li>
+                        {% endif %}
+                        
+                        <li class="nav-item">
+                            <a class="nav-link-custom" href="{% url 'class_files' %}">
+                                <i class="fas fa-folder text-success"></i> Topar paýlaşmasy
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link-custom" href="{% url 'assignments' %}">
+                                <i class="fas fa-list-check text-danger"></i> Tabşyryklar
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link-custom" href="{% url 'deadline_calendar' %}">
+                                <i class="fas fa-calendar-days text-secondary"></i> Kalendar
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link-custom" href="{% url 'inbox' %}">
+                                <i class="fas fa-inbox text-warning"></i> Gelen hatlar
+                            </a>
+                        </li>
+
+                        <!-- Bildirişler -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link-custom dropdown-toggle position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-bell text-warning"></i> Bildirişler
+                                {% if unread_notification_count %}
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-light">
+                                    {{ unread_notification_count }}
+                                </span>
+                                {% endif %}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-custom" aria-labelledby="notificationDropdown" style="min-width: 300px;">
+                                {% if recent_notifications %}
+                                    {% for notification in recent_notifications %}
+                                    <li>
+                                        <a class="dropdown-item dropdown-item-custom {% if not notification.is_read %}fw-bold{% endif %}" href="{% url 'mark_notification_read' notification.id %}">
+                                            <div>{{ notification.title }}</div>
+                                            <small class="text-muted">{{ notification.created_at|date:"d.m.Y H:i" }}</small>
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                    <li><hr class="dropdown-divider opacity-20"></li>
+                                {% else %}
+                                    <li><span class="dropdown-item-text text-muted">Täze bildiriş ýok</span></li>
+                                    <li><hr class="dropdown-divider opacity-20"></li>
+                                {% endif %}
+                                <li>
+                                    <a class="dropdown-item dropdown-item-custom text-center fw-bold text-success" href="{% url 'notifications' %}">
+                                        Ähli bildirişleri gör
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- {% if user.is_admin_role %}
+                            <li class="nav-item">
+                                <a class="nav-link-custom" href="{% url 'admin_dashboard' %}">
+                                    <i class="fas fa-chart-bar text-primary"></i> Admin
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link-custom" href="{% url 'admin_file_history' %}">
+                                    <i class="fas fa-history text-danger"></i> Faýl taryhy
+                                </a>
+                            </li>
+                        {% endif %} -->
+
+                        <!-- Profil -->
+                        <li class="nav-item dropdown ms-lg-2">
+                            <a class="nav-link-custom dropdown-toggle fw-bold" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user-circle fa-lg text-success"></i> {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-custom" aria-labelledby="userDropdown">
+                                <li>
+                                    <span class="dropdown-item-text text-muted small fw-semibold">Rol: {{ user.get_role_display }}</span>
+                                </li>
+                                <li><hr class="dropdown-divider opacity-20"></li>
+                                <li>
+                                    <a class="dropdown-item dropdown-item-custom" href="{% url 'profile' %}">
+                                        <i class="fas fa-user me-2 text-primary"></i> Profilim
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider opacity-20"></li>
+                                <li>
+                                    <form method="post" action="{% url 'logout' %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item dropdown-item-custom text-danger border-0 bg-transparent w-100 text-start">
+                                            <i class="fas fa-sign-out-alt me-2"></i> Çykyş
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link-custom" href="{% url 'login' %}">
+                                <i class="fas fa-sign-in-alt text-success"></i> Içeri gir
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link-custom" href="{% url 'register' %}">
+                                <i class="fas fa-user-plus text-primary"></i> Hasaba alyň
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    <div class="container-fluid pt-3">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <i class="fas fa-info-circle me-2"></i> {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer-custom">
+        <div class="container-fluid">
+            <p class="mb-0"><i class="fas fa-copyright me-1"></i> 2026 Paylaş Ulgamy. Ähli hukuklar goralan.</p>
+        </div>
+    </footer>
+
+    <!-- Global Theme Toggle Button -->
+    <button class="theme-switch-btn" id="themeToggleBtn" type="button" title="Reňk düzgünini çalyş">
+        <i class="fas fa-moon fa-lg" id="themeIcon"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const themeToggleBtn = document.getElementById("themeToggleBtn");
+            const themeIcon = document.getElementById("themeIcon");
+            const htmlElement = document.documentElement;
+
+            // Sahypa açylanda öň ýatda saklanan temany ýükleýäris
+            const savedTheme = localStorage.getItem("theme") || "light";
+            setTheme(savedTheme);
+
+            if (themeToggleBtn) {
+                themeToggleBtn.addEventListener("click", function () {
+                    let currentTheme = htmlElement.getAttribute("data-bs-theme") || "light";
+                    let newTheme = currentTheme === "dark" ? "light" : "dark";
+                    setTheme(newTheme);
+                });
+            }
+
+            function setTheme(theme) {
+                htmlElement.setAttribute("data-bs-theme", theme);
+                localStorage.setItem("theme", theme);
+                
+                if (themeIcon) {
+                    if (theme === "dark") {
+                        // Gije režiminde GÜN (Sun) çykýar we aýnky klass aýrylýar
+                        themeIcon.className = "fas fa-sun fa-lg";
+                    } else {
+                        // Gündiz režiminde dogry tarapa bakýan AÝ (Moon) çykýar
+                        themeIcon.className = "fas fa-moon fa-lg";
+                    }
+                }
+            }
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

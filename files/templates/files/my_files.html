@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block title %}Meniň faýllarym - Paylas Ulgamy{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-green: #198754;
+        --hover-green: #157347;
+        --light-green: #f4fbf7;
+        --border-green: #c8e6c9;
+    }
+    .text-success-custom {
+        color: var(--primary-green) !important;
+    }
+    .btn-success-custom {
+        background-color: var(--primary-green);
+        border-color: var(--primary-green);
+        color: #fff;
+    }
+    .btn-success-custom:hover {
+        background-color: var(--hover-green);
+        border-color: var(--hover-green);
+        color: #fff;
+    }
+    .btn-outline-success-custom {
+        color: var(--primary-green);
+        border-color: var(--primary-green);
+    }
+    .btn-outline-success-custom:hover {
+        background-color: var(--primary-green);
+        border-color: var(--primary-green);
+        color: #fff;
+    }
+    
+    /* Folder & File Cards */
+    .file-card, .folder-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 0.75rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .folder-card:hover, .file-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0.5rem 1rem rgba(25, 135, 84, 0.12);
+        border-color: var(--border-green);
+    }
+    .folder-icon {
+        color: #2ec4b6;
+    }
+
+    /* Breadcrumb Custom */
+    .breadcrumb-item a {
+        color: var(--primary-green);
+        text-decoration: none;
+    }
+    .breadcrumb-item a:hover {
+        text-decoration: underline;
+    }
+    
+    /* Alert Custom */
+    .alert-success-custom {
+        background-color: var(--light-green);
+        border-color: var(--border-green);
+        color: #1b5e20;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-success-custom"><i class="fas fa-folder-open"></i> Meniň faýllarym</h2>
+        
+        <!-- Breadcrumb navigation -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 fw-semibold">
+                {% if current_folder %}
+                    <li class="breadcrumb-item"><a href="{% url 'my_files' %}">Esasy</a></li>
+                    <li class="breadcrumb-item active text-muted">{{ current_folder.name }}</li>
+                {% else %}
+                    <li class="breadcrumb-item active text-muted">Esasy</li>
+                {% endif %}
+            </ol>
+        </nav>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="mb-4">
+        <button class="btn btn-success-custom" data-bs-toggle="modal" data-bs-target="#folderModal">
+            <i class="fas fa-folder-plus me-1"></i> Täze papka
+        </button>
+    </div>
+
+    <!-- Folders grid -->
+    {% if folders %}
+        <h5 class="mb-3 text-success-custom"><i class="fas fa-folder me-1"></i> Papkalar</h5>
+        <div class="row mb-4">
+            {% for folder in folders %}
+                <div class="col-md-3 col-lg-2 mb-3">
+                    <a href="?folder={{ folder.id }}" class="text-decoration-none">
+                        <div class="card folder-card h-100 text-center bg-white shadow-sm">
+                            <div class="card-body p-3">
+                                <i class="fas fa-folder fa-3x folder-icon mb-2"></i>
+                                <h6 class="card-title text-dark text-truncate mb-0" title="{{ folder.name }}">{{ folder.name }}</h6>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Files list -->
+    {% if files %}
+        <h5 class="mb-3 text-success-custom"><i class="fas fa-file-alt me-1"></i> Faýllar</h5>
+        <div class="row">
+            {% for file in files %}
+                <div class="col-md-4 col-lg-3 mb-3">
+                    <div class="card file-card h-100 bg-white shadow-sm">
+                        <div class="card-body p-3 d-flex flex-column">
+                            <div class="text-center my-2">
+                                <i class="fas fa-file-lines fa-3x text-success-custom mb-2"></i>
+                                <h6 class="card-title text-dark text-truncate" title="{{ file.file.name }}">{{ file.file.name|truncatechars:20 }}</h6>
+                            </div>
+                            <p class="small text-muted mb-1"><i class="fas fa-clock me-1"></i>{{ file.created_at|date:"d.m.Y H:i" }}</p>
+                            {% if file.expires_at %}
+                                <p class="small text-warning mb-2"><i class="fas fa-hourglass-half me-1"></i>Möhleti: {{ file.expires_at|date:"d.m.Y H:i" }}</p>
+                            {% endif %}
+                            
+                            <div class="mt-auto pt-2">
+                                <a href="{% url 'preview_private_file' file.id %}" class="btn btn-sm btn-outline-success-custom w-100 mb-2">
+                                    <i class="fas fa-eye"></i> Gör
+                                </a>
+                                <a href="{% url 'download_private_file' file.id %}" class="btn btn-sm btn-success-custom w-100">
+                                    <i class="fas fa-download"></i> Göçür
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if not folders and not files %}
+        <div class="alert alert-success-custom text-center py-5">
+            <i class="fas fa-folder-open fa-3x mb-3 text-success-custom"></i>
+            <p class="mb-0 fw-medium">Hiç papka ýa-da faýl ýok. Täze papka dörediň!</p>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Create Folder Modal -->
+<div class="modal fade" id="folderModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <form method="post" action="{% url 'create_folder' %}">
+                {% csrf_token %}
+                <input type="hidden" name="parent" value="{{ current_folder.id|default:'' }}">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title text-success-custom"><i class="fas fa-folder-plus me-1"></i> Täze papka döret</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label for="folder_name" class="form-label fw-semibold">Papka ady</label>
+                        <input type="text" class="form-control" id="folder_name" name="name" placeholder="Papka adyny giriziň..." required>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ýatyr</button>
+                    <button type="submit" class="btn btn-success-custom">Döret</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

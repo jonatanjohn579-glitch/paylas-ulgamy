@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block title %}Baş sahypa - Paylas Ulgamy{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-green: #198754;
+        --hover-green: #157347;
+        --light-green: #f4fbf7;
+        --border-green: #c8e6c9;
+    }
+
+    .text-success-custom {
+        color: var(--primary-green) !important;
+    }
+
+    /* Hero Banner Section */
+    .heroic-section {
+        background: linear-gradient(135deg, #198754 0%, #157347 100%);
+        color: #ffffff;
+        padding: 2.5rem 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 20px rgba(25, 135, 84, 0.15);
+        margin-bottom: 2rem;
+    }
+
+    .user-avatar {
+        width: 75px;
+        height: 75px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid rgba(255, 255, 255, 0.8);
+    }
+
+    /* Card Styling & Hover Effects */
+    .dash-card {
+        border-radius: 0.85rem;
+        border: 1px solid #e2e8f0 !important;
+        transition: all 0.25s ease-in-out;
+    }
+    
+    .dash-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.75rem 1.5rem rgba(25, 135, 84, 0.12) !important;
+        border-color: var(--border-green) !important;
+    }
+
+    /* Icon Circle Container */
+    .icon-box {
+        width: 65px;
+        height: 65px;
+        border-radius: 50%;
+        background-color: var(--light-green);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        transition: transform 0.25s ease;
+    }
+
+    .dash-card:hover .icon-box {
+        transform: scale(1.12);
+        background-color: #e8f5e9;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-2">
+
+    <!-- Hero Header Section -->
+    <div class="heroic-section mb-4">
+        <div class="row align-items-center">
+            <div class="col-md-8 mb-3 mb-md-0">
+                <h1 class="mb-2 fw-bold text-white">
+                    <i class="fas fa-hand-wave me-2"></i>Hoş geldiňiz, {{ request.user.username }}!
+                </h1>
+                <p class="lead mb-0 opacity-90">
+                    Topar: <strong class="badge bg-white text-success shadow-sm px-3 py-2">{{ request.user.classroom|default:"Goýulmady" }}</strong>
+                </p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                {% if request.user.profile_image %}
+                    <img src="{{ request.user.profile_image.url }}" alt="Profil suraty" class="user-avatar shadow-sm">
+                {% else %}
+                    <div class="user-avatar bg-white d-inline-flex align-items-center justify-content-center shadow-sm">
+                        <i class="fas fa-user-check fa-2x text-success-custom"></i>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Features Grid -->
+    <h5 class="mb-3 text-success-custom fw-bold"><i class="fas fa-shapes me-2"></i>Esasy Bölümler</h5>
+
+    <div class="row g-4 mb-5">
+        
+        <!-- 1. Tabşyryklar (Täze nyşan: fa-list-check -> fa-clipboard-check) -->
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'assignments' %}" class="text-decoration-none">
+                <div class="card dash-card h-100 bg-white shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-box">
+                            <i class="fas fa-clipboard-check fa-2x text-success-custom"></i>
+                        </div>
+                        <h5 class="card-title text-dark fw-bold">Tabşyryklar</h5>
+                        <p class="card-text text-muted small mb-0">Berlen işleri gör, faýllary ugrat we tabşyryklary barla.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- 2. Meniň profilim (Täze nyşan: fa-user -> fa-user-gear) -->
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'profile' %}" class="text-decoration-none">
+                <div class="card dash-card h-100 bg-white shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-box">
+                            <i class="fas fa-user-gear fa-2x text-success-custom"></i>
+                        </div>
+                        <h5 class="card-title text-dark fw-bold">Meniň profilim</h5>
+                        <p class="card-text text-muted small mb-0">Profiliňi gör, parolyňy we maglumatlaryňy üýtget.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- 3. Ulanyjy gözlemek (Täze nyşan: fa-users -> fa-user-group) -->
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'student_list' %}" class="text-decoration-none">
+                <div class="card dash-card h-100 bg-white shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-box">
+                            <i class="fas fa-user-group fa-2x text-success-custom"></i>
+                        </div>
+                        <h5 class="card-title text-dark fw-bold">Ulanyjy gözlemek</h5>
+                        <p class="card-text text-muted small mb-0">Synpdaşlary tapmak we olara göni faýl ugratmak.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- 4. Topar faýllary (Täze nyşan: fa-folder-open -> fa-folder-tree) -->
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'class_files' %}" class="text-decoration-none">
+                <div class="card dash-card h-100 bg-white shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-box">
+                            <i class="fas fa-folder-tree fa-2x text-success-custom"></i>
+                        </div>
+                        <h5 class="card-title text-dark fw-bold">Topar faýllary</h5>
+                        <p class="card-text text-muted small mb-0">Paýlaşylan synp materiallaryna we derslere girmek.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- 5. Gelen faýllar (Täze nyşan: fa-inbox -> fa-tray-flat) -->
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'inbox' %}" class="text-decoration-none">
+                <div class="card dash-card h-100 bg-white shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-box">
+                            <i class="fas fa-tray-flat fa-2x text-success-custom"></i>
+                        </div>
+                        <h5 class="card-title text-dark fw-bold">Gelen faýllar</h5>
+                        <p class="card-text text-muted small mb-0">Siz üçin ugradylan şahsy faýllary gözden geçirmek.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- 6. Kalendar (Täze nyşan: fa-calendar-days -> fa-calendar-check) -->
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'deadline_calendar' %}" class="text-decoration-none">
+                <div class="card dash-card h-100 bg-white shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-box">
+                            <i class="fas fa-calendar-check fa-2x text-success-custom"></i>
+                        </div>
+                        <h5 class="card-title text-dark fw-bold">Kalendar</h5>
+                        <p class="card-text text-muted small mb-0">Tabşyryklaryň möhletlerini we wagtlaryny yzarlamak.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

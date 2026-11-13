@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+
+{% block title %}Içeri giriş - Paylas Ulgamy{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ========== Vibrant Green Login Theme ========== */
+    :root {
+        --primary-green: #10b981;
+        --emerald-bright: #00ff87;
+        --dark-green: #064e3b;
+        --neon-glow: rgba(0, 255, 135, 0.45);
+        
+        --login-card-bg: #ffffff;
+        --login-input-bg: #f8fafc;
+        --login-border: #e2e8f0;
+        --text-main: #064e3b;
+        --text-sub: #64748b;
+    }
+
+    [data-bs-theme="dark"] {
+        --login-card-bg: #0f172a;
+        --login-input-bg: #1e293b;
+        --login-border: #334155;
+        --text-main: #ecfdf5;
+        --text-sub: #94a3b8;
+        --neon-glow: rgba(0, 255, 135, 0.65);
+    }
+
+    /* Container Card Style */
+    .login-card-wrapper {
+        position: relative;
+        border-radius: 1.5rem;
+        padding: 2.5px;
+        background: linear-gradient(135deg, #00ff87, #10b981, #059669);
+        background-size: 200% 200%;
+        animation: borderGlow 3s ease infinite alternate;
+        box-shadow: 0 10px 30px var(--neon-glow);
+    }
+
+    .login-card {
+        background-color: var(--login-card-bg) !important;
+        border-radius: 1.4rem;
+        border: none;
+        color: var(--text-main);
+        transition: all 0.3s ease;
+    }
+
+    .icon-header-box {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(0,255,135,0.2), rgba(16,185,129,0.1));
+        border: 2px solid var(--primary-green);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-green);
+        box-shadow: 0 4px 15px rgba(0, 255, 135, 0.2);
+    }
+
+    /* Inputs Styling */
+    .custom-input-group .input-group-text {
+        background-color: var(--login-input-bg) !important;
+        border-color: var(--login-border) !important;
+        color: var(--primary-green) !important;
+        border-top-left-radius: 0.8rem;
+        border-bottom-left-radius: 0.8rem;
+    }
+
+    .custom-input-group .form-control {
+        background-color: var(--login-input-bg) !important;
+        border-color: var(--login-border) !important;
+        color: var(--text-main) !important;
+        border-top-right-radius: 0.8rem;
+        border-bottom-right-radius: 0.8rem;
+        padding: 0.75rem 1rem;
+    }
+
+    .custom-input-group .form-control:focus {
+        border-color: var(--primary-green) !important;
+        box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.25) !important;
+    }
+
+    .toggle-password-btn {
+        background-color: var(--login-input-bg) !important;
+        border: 1px solid var(--login-border) !important;
+        border-left: none !important;
+        color: var(--text-sub) !important;
+        border-top-right-radius: 0.8rem !important;
+        border-bottom-right-radius: 0.8rem !important;
+        cursor: pointer;
+    }
+
+    .has-toggle .form-control {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+    }
+
+    /* Submit Button */
+    .btn-green-submit {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: #ffffff !important;
+        border: none;
+        border-radius: 0.8rem;
+        padding: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35);
+        transition: all 0.3s ease;
+    }
+
+    .btn-green-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 22px rgba(0, 255, 135, 0.5);
+        background: linear-gradient(135deg, #00ff87 0%, #059669 100%);
+    }
+
+    .link-green {
+        color: var(--primary-green) !important;
+        transition: color 0.2s ease;
+    }
+
+    .link-green:hover {
+        color: var(--emerald-bright) !important;
+        text-decoration: underline !important;
+    }
+
+    @keyframes borderGlow {
+        0%   { background-position: 0% 50%; }
+        100% { background-position: 100% 50%; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center my-5">
+    <div class="col-md-6 col-lg-5">
+        <div class="login-card-wrapper">
+            <div class="card login-card p-4 p-sm-5">
+                <div class="card-body">
+                    
+                    <!-- Header Icon & Title -->
+                    <div class="text-center mb-4">
+                        <div class="icon-header-box mb-3">
+                            <i class="fas fa-right-to-bracket fa-2x"></i>
+                        </div>
+                        <h2 class="fw-bold mb-1" style="color: var(--text-main);">Içeri giriş</h2>
+                        <p class="small" style="color: var(--text-sub);">Hasabyňyza girmek üçin maglumatlaryňyzy giriziň</p>
+                    </div>
+
+                    <!-- Errors Alert -->
+                    {% if form.errors %}
+                        <div class="alert alert-danger border-0 shadow-sm alert-dismissible fade show rounded-3 mb-4" role="alert">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-exclamation-triangle me-2 fa-lg"></i>
+                                <div>Ýalňyş ulanyjy ady ýa-da parol!</div>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endif %}
+
+                    <!-- Login Form -->
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Username -->
+                        <div class="mb-3">
+                            <label for="id_username" class="form-label fw-semibold small" style="color: var(--text-main);">Ulanyjy ady</label>
+                            <div class="input-group custom-input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" name="username" class="form-control" id="id_username" placeholder="Ulanyjy adyňyz" required autofocus>
+                            </div>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-4">
+                            <label for="id_password" class="form-label fw-semibold small" style="color: var(--text-main);">Parol</label>
+                            <div class="input-group custom-input-group has-toggle">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" name="password" class="form-control" id="id_password" placeholder="••••••••" required>
+                                <button class="btn toggle-password-btn" type="button" id="togglePassword">
+                                    <i class="fas fa-eye" id="eyeIcon"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-green-submit w-100 mb-3">
+                            <i class="fas fa-right-to-bracket me-2"></i> Gir
+                        </button>
+                    </form>
+
+                    <hr class="my-4" style="border-color: var(--login-border);">
+
+                    <!-- Register Link -->
+                    <p class="text-center mb-0 small" style="color: var(--text-sub);">
+                        Hasabyňyz ýokmy? 
+                        <a href="{% url 'register' %}" class="fw-bold link-green text-decoration-none ms-1">Täze hasap döret</a>
+                    </p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const togglePassword = document.getElementById("togglePassword");
+        const passwordInput = document.getElementById("id_password");
+        const eyeIcon = document.getElementById("eyeIcon");
+
+        if (togglePassword && passwordInput) {
+            togglePassword.addEventListener("click", function () {
+                const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+                passwordInput.setAttribute("type", type);
+                
+                if (type === "text") {
+                    eyeIcon.classList.remove("fa-eye");
+                    eyeIcon.classList.add("fa-eye-slash");
+                } else {
+                    eyeIcon.classList.remove("fa-eye-slash");
+                    eyeIcon.classList.add("fa-eye");
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

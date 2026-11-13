@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    /* Register Page Custom Styles */
+    .register-card-wrapper {
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    
+    .register-card {
+        background: var(--card-bg, #ffffff);
+        border: 1px solid var(--register-border, #e0e0e0);
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    }
+
+    .icon-header-box {
+        width: 60px;
+        height: 60px;
+        background: rgba(40, 167, 69, 0.1);
+        color: var(--primary-green, #28a745);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        margin: 0 auto;
+    }
+
+    .custom-input-group .input-group-text {
+        background-color: var(--input-addon-bg, #f8f9fa);
+        border-color: var(--register-border, #ced4da);
+        color: var(--text-sub, #6c757d);
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+    }
+
+    .custom-input-group .form-control,
+    .custom-input-group .form-select {
+        border-color: var(--register-border, #ced4da);
+        padding: 10px 15px;
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+
+    .custom-input-group .form-control:focus,
+    .custom-input-group .form-select:focus {
+        border-color: var(--primary-green, #28a745);
+        box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.15);
+    }
+
+    .has-toggle .form-control {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .toggle-password-btn {
+        background-color: var(--input-addon-bg, #f8f9fa);
+        border: 1px solid var(--register-border, #ced4da);
+        border-left: none;
+        color: var(--text-sub, #6c757d);
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+        z-index: 4;
+    }
+
+    .toggle-password-btn:hover {
+        color: var(--primary-green, #28a745);
+        background-color: var(--input-addon-bg, #f8f9fa);
+    }
+
+    .btn-green-submit {
+        background-color: var(--primary-green, #28a745);
+        border-color: var(--primary-green, #28a745);
+        color: #fff;
+        padding: 12px;
+        font-weight: 600;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-green-submit:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+        transform: translateY(-1px);
+        box-shadow: 0 5px 15px rgba(40, 167, 69, 0.2);
+    }
+
+    .link-green {
+        color: var(--primary-green, #28a745);
+    }
+
+    .link-green:hover {
+        color: #218838;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<div class="container">
+    <div class="row justify-content-center align-items-center my-5">
+        <div class="col-md-6 col-lg-5">
+            <div class="register-card-wrapper">
+                <div class="card register-card p-4 p-sm-5">
+                    <div class="card-body">
+                        
+                        <!-- Header Icon & Title -->
+                        <div class="text-center mb-4">
+                            <div class="icon-header-box mb-3">
+                                <i class="fas fa-user-plus fa-2x"></i>
+                            </div>
+                            <h2 class="fw-bold mb-1" style="color: var(--text-main, #212529);">Hasaba alynmak</h2>
+                            <p class="small" style="color: var(--text-sub, #6c757d);">Talyp ERDU Ulgamyna goşulmak üçin maglumatlaryňyzy giriziň</p>
+                        </div>
+
+                        <!-- Flash Messages -->
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-success border-0 shadow-sm alert-dismissible fade show rounded-3 mb-4" role="alert">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-circle-check me-2 fa-lg"></i>
+                                        <div>{{ message }}</div>
+                                    </div>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <!-- Register Form -->
+                        <form method="post" novalidate>
+                            {% csrf_token %}
+                            
+                            <!-- Username -->
+                            <div class="mb-3">
+                                <label for="id_username" class="form-label fw-semibold small" style="color: var(--text-main, #212529);">Ulanyjy ady</label>
+                                <div class="input-group custom-input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input type="text" name="username" class="form-control" id="id_username" placeholder="Täze ulanyjy ady" required autofocus>
+                                </div>
+                                {% if form.username.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.username.errors %}<i class="fas fa-exclamation-circle me-1"></i>{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Role Selection -->
+                            <div class="mb-3">
+                                <label for="id_role" class="form-label fw-semibold small" style="color: var(--text-main, #212529);">Ulgamdaky rolyňyz</label>
+                                <div class="input-group custom-input-group">
+                                    <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                                    {{ form.role }}
+                                </div>
+                                {% if form.role.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.role.errors %}<i class="fas fa-exclamation-circle me-1"></i>{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Classroom / Group -->
+                            <div class="mb-3">
+                                <label for="id_classroom" class="form-label fw-semibold small" style="color: var(--text-main, #212529);">Topar / Kafedra</label>
+                                <div class="input-group custom-input-group">
+                                    <span class="input-group-text"><i class="fas fa-graduation-cap"></i></span>
+                                    {{ form.classroom }}
+                                </div>
+                                {% if form.classroom.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.classroom.errors %}<i class="fas fa-exclamation-circle me-1"></i>{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Password 1 -->
+                            <div class="mb-3">
+                                <label for="id_password1" class="form-label fw-semibold small" style="color: var(--text-main, #212529);">Parol</label>
+                                <div class="input-group custom-input-group has-toggle">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <input type="password" name="password1" class="form-control" id="id_password1" placeholder="••••••••" required>
+                                    <button class="btn toggle-password-btn" type="button" onclick="togglePass('id_password1', 'eyeIcon1')">
+                                        <i class="fas fa-eye" id="eyeIcon1"></i>
+                                    </button>
+                                </div>
+                                {% if form.password1.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.password1.errors %}<i class="fas fa-exclamation-circle me-1"></i>{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Password 2 -->
+                            <div class="mb-4">
+                                <label for="id_password2" class="form-label fw-semibold small" style="color: var(--text-main, #212529);">Paroly tassyklamaw</label>
+                                <div class="input-group custom-input-group has-toggle">
+                                    <span class="input-group-text"><i class="fas fa-shield-halved"></i></span>
+                                    <input type="password" name="password2" class="form-control" id="id_password2" placeholder="••••••••" required>
+                                    <button class="btn toggle-password-btn" type="button" onclick="togglePass('id_password2', 'eyeIcon2')">
+                                        <i class="fas fa-eye" id="eyeIcon2"></i>
+                                    </button>
+                                </div>
+                                {% if form.password2.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.password2.errors %}<i class="fas fa-exclamation-circle me-1"></i>{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="btn btn-green-submit w-100 mb-3">
+                                <i class="fas fa-user-plus me-2"></i> Hasaba alynyň
+                            </button>
+                        </form>
+
+                        <hr class="my-4" style="border-color: var(--register-border, #e0e0e0);">
+
+                        <!-- Login Link -->
+                        <p class="text-center mb-0 small" style="color: var(--text-sub, #6c757d);">
+                            Eýýäm hasabyňyz barmy? 
+                            <a href="{% url 'login' %}" class="fw-bold link-green text-decoration-none ms-1">Içeri giriň</a>
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function togglePass(inputId, iconId) {
+        const passwordInput = document.getElementById(inputId);
+        const eyeIcon = document.getElementById(iconId);
+
+        if (passwordInput && eyeIcon) {
+            const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+            passwordInput.setAttribute("type", type);
+            
+            if (type === "text") {
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            } else {
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            }
+        }
+    }
+</script>
+{% endblock %}

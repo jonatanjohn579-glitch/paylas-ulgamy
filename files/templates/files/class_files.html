@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+
+{% block title %}Topar faýllar - Paylas Ulgamy{% endblock %}
+
+{% block content %}
+<!-- Custom Green Styling -->
+<style>
+    .text-success-custom {
+        color: #198754 !important;
+    }
+    .btn-success-custom {
+        background-color: #198754;
+        border-color: #198754;
+        color: #fff;
+    }
+    .btn-success-custom:hover {
+        background-color: #157347;
+        border-color: #146c43;
+        color: #fff;
+    }
+    .btn-outline-success-custom {
+        color: #198754;
+        border-color: #198754;
+    }
+    .btn-outline-success-custom:hover {
+        background-color: #198754;
+        border-color: #198754;
+        color: #fff;
+    }
+    .file-item {
+        background: #f8f9fa;
+        border-left: 4px solid #198754;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 0.375rem;
+        transition: all 0.2s ease-in-out;
+    }
+    .file-item:hover {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+    .page-item.active .page-link {
+        background-color: #198754;
+        border-color: #198754;
+    }
+    .page-link {
+        color: #198754;
+    }
+    .page-link:hover {
+        color: #157347;
+    }
+</style>
+
+<h2 class="mb-4 text-success-custom"><i class="fas fa-folder-open"></i> Topar faýllar</h2>
+
+<div class="row mb-5">
+    <!-- Täze faýl ýükle bölegi -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body p-4">
+                <h5 class="card-title mb-3 text-success-custom"><i class="fas fa-cloud-upload-alt"></i> Täze faýl ýükle</h5>
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_file" class="form-label">Faýl saýla</label>
+                        <input type="file" name="file" class="form-control" id="id_file" required>
+                        <small class="text-muted d-block mt-1">Iň uly göwrüm: 10MB</small>
+                        {% if form.file.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.file.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_comment" class="form-label">Düşündiriş (Hökmany däl)</label>
+                        <textarea name="comment" class="form-control" id="id_comment" rows="2" placeholder="Düşündiriş goşuň..."></textarea>
+                        {% if form.comment.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.comment.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Faýlyň möhleti</label>
+                        {{ form.expiry_days }}
+                    </div>
+
+                    <button type="submit" class="btn btn-success-custom w-100">
+                        <i class="fas fa-upload"></i> Ýükle
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Elýeterli faýllar sanawy -->
+    <div class="col-lg-8">
+        <h5 class="mb-3 text-success-custom"><i class="fas fa-list"></i> Elýeterli faýllar</h5>
+        
+        {% if files %}
+            <div>
+                {% for file in files %}
+                    <div class="file-item">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="mb-1 text-dark">
+                                    <i class="fas fa-file text-success-custom"></i> {{ file.file.name|truncatechars:40 }}
+                                </h6>
+                                <small class="text-muted">
+                                    <strong>{{ file.uploaded_by.username }}</strong> tarapyndan {{ file.created_at|date:"d.m.Y H:i" }} ýüklenen
+                                </small>
+                                {% if file.comment %}
+                                    <p class="mt-2 mb-0 text-muted">{{ file.comment }}</p>
+                                {% endif %}
+                                {% if file.expires_at %}
+                                    <small class="d-block mt-2 text-warning">
+                                        Möhleti: {{ file.expires_at|date:"d.m.Y H:i" }}
+                                    </small>
+                                {% endif %}
+                            </div>
+                            <div class="col-auto">
+                                <a href="{% url 'preview_class_file' file.id %}" class="btn btn-outline-success-custom btn-sm mb-2">
+                                    <i class="fas fa-eye"></i> Gör
+                                </a>
+                                <br>
+                                <a href="{% url 'download_class_file' file.id %}" class="btn btn-success-custom btn-sm">
+                                    <i class="fas fa-download"></i> Ýükle
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-success text-center bg-light border-success text-success-custom">
+                <i class="fas fa-folder-open"></i> Elýeterli faýl ýok.
+            </div>
+        {% endif %}
+
+        <!-- Pagination -->
+        {% if files.has_other_pages %}
+            <nav aria-label="Sahypa geçişi" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if files.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ files.previous_page_number }}">
+                                <i class="fas fa-chevron-left"></i> Öňki
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link"><i class="fas fa-chevron-left"></i> Öňki</span>
+                        </li>
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <span class="page-link">Sahypa {{ files.number }} / {{ files.paginator.num_pages }}</span>
+                    </li>
+
+                    {% if files.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ files.next_page_number }}">
+                                Indiki <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">Indiki <i class="fas fa-chevron-right"></i></span>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    </div>
+</div>
+
+<div class="text-center mt-4">
+    <a href="{% url 'dashboard' %}" class="btn btn-outline-success-custom">
+        <i class="fas fa-arrow-left"></i> Baş sahypa dolan
+    </a>
+</div>
+{% endblock %}
