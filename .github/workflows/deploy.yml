@@ -11,18 +11,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup SSH Key and Deploy
+      - name: Install sshpass and Deploy
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }}
         run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          sudo apt-get update
+          sudo apt-get install -y sshpass
           
-          ssh -o StrictHostKeyChecking=accept-new \
-              -o IdentitiesOnly=yes \
-              -i ~/.ssh/id_rsa \
-              root@45.61.158.184 << 'EOF'
+          sshpass -p "$VPS_PASSWORD" ssh \
+            -o StrictHostKeyChecking=accept-new \
+            root@45.61.158.184 << 'EOF'
             
             if [ -d "/root/paylas_ulgamy" ]; then
               cd /root/paylas_ulgamy
