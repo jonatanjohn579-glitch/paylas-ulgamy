@@ -18,5 +18,5 @@ jobs:
           sshpass -e ssh \
             -o StrictHostKeyChecking=accept-new \
             -p 22 \
-            root@153.75.83.209 \
+            root@153.75.83.201 \
             "whoami && hostname && uptime"
