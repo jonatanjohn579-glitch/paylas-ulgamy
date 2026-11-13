@@ -19,9 +19,11 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           
-          # VPS serwere baglanyp kody çekmek we işetmek
-          ssh -o StrictHostKeyChecking=accept-new -i ~/.ssh/id_rsa root@45.61.158.184 << 'EOF'
-            # Proýekt papkasy bar bolsa git pull, ýok bolsa clone etmeli
+          ssh -o StrictHostKeyChecking=accept-new \
+              -o IdentitiesOnly=yes \
+              -i ~/.ssh/id_rsa \
+              root@45.61.158.184 << 'EOF'
+            
             if [ -d "/root/paylas_ulgamy" ]; then
               cd /root/paylas_ulgamy
               git pull origin main
@@ -30,18 +32,15 @@ jobs:
               cd /root/paylas_ulgamy
             fi
             
-            # Virtual environment barlamak we döretmek
             if [ ! -d "venv" ]; then
               python3 -m venv venv
             fi
             source venv/bin/activate
             
-            # Kitaphanalary gurnamak we migrasiýa
             pip install --upgrade pip
             pip install -r requirements.txt
             python manage.py migrate
             python manage.py collectstatic --noinput
             
-            # Eger gunicorn ýa-da systemd ulanylýan bolsa serweri restart etmek
             sudo systemctl restart paylas_ulgamy || true
           EOF
